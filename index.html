@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Indic Text Editor</title>
+    <style>
+      .container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+h1 {
+  text-align: center;
+}
+
+#textInput {
+  margin-left:35%;
+  margin-top:100px
+
+}
+
+#sentencesContainer {
+  border-top: 1px solid #ccc;
+  padding-top: 20px;
+  font-weight: 20px;
+}
+
+    </style>
+  </head>
+  <body>
+    <h1>Indic Text Editor</h1>
+
+    <div>
+      
+      <textarea id="textInput" placeholder="Enter Indic text"></textarea>
+      <button onclick="splitIntoSentences()">Split into Sentences</button>
+    </div>
+
+    <div id="sentencesContainer"></div>
+
+    <script>
+      let sentences = [];
+
+      function splitIntoSentences() {
+        const textInput = document.getElementById("textInput");
+        const sentencesContainer = document.getElementById("sentencesContainer");
+        const text = textInput.value.trim();
+
+        if (!text) {
+          sentencesContainer.innerHTML = "<p>Please enter some text.</p>";
+          return;
+        }
+
+        sentences = text.split(/[.|?|!]/).filter((sentence) => sentence.trim() !== "");
+
+        if (sentences.length === 0) {
+          sentencesContainer.innerHTML = "<p>No sentences found.</p>";
+          return;
+        }
+
+        renderSentences();
+      }
+
+      function renderSentences() {
+        const sentencesContainer = document.getElementById("sentencesContainer");
+        sentencesContainer.innerHTML = "";
+
+        sentences.forEach((sentence, index) => {
+          const sentenceElement = document.createElement("div");
+          const sentenceNumber = index + 1;
+
+          const sentenceNumberElement = document.createElement("span");
+          sentenceNumberElement.textContent = sentenceNumber + ": ";
+
+          const sentenceTextElement = document.createElement("span");
+          sentenceTextElement.textContent = sentence;
+
+          const editButton = document.createElement("button");
+          editButton.textContent = "Edit";
+          editButton.onclick = () => editSentence(index);
+
+          sentenceElement.appendChild(sentenceNumberElement);
+          sentenceElement.appendChild(sentenceTextElement);
+          sentenceElement.appendChild(editButton);
+
+          sentencesContainer.appendChild(sentenceElement);
+        });
+      }
+
+      function editSentence(index) {
+        const sentence = sentences[index];
+        const editedSentence = prompt("Edit the sentence:", sentence);
+
+        if (editedSentence === null) {
+          return;
+        }
+
+        sentences[index] = editedSentence;
+        renderSentences();
+      }
+    </script>
+  </body>
+</html>
